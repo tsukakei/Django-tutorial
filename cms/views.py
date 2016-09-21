@@ -3,11 +3,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
-# Create your views here.
+from cms.models import Book
 
 def book_list(request):
     """書籍の一覧"""
-    return HttpResponse('書籍の一部')
+    books = Book.objects.all().order_by('id')
+    return render(request,
+                    'cms/book_list.html',
+                    {'books': books})
 
 def book_edit(request,book_id=None):
     """書籍の編集"""
