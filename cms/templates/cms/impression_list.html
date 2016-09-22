@@ -1,4 +1,4 @@
-{% extends "base.htnl" %}
+{% extends "base.html" %}
 
 {% block title %}感想の一覧{% endblock title %}
 
@@ -33,7 +33,7 @@ table {
       {% for impression in impressions %}
       <tr>
         <td>{{ impression.id }}</td>
-        <td>{{ impression.comment|linebreakbr }}</td>
+        <td>{{ impression.comment|linebreaksbr }}</td>
         <td>
           <a href="{% url 'cms:impression_mod' book_id=book.id impression_id=impression.id %}" class="btn btn-default btn-sm">修正</a>
           <button class="btn btn-default btn-sm del_confirm" data-toggle="modal" data-target="#deleteModal" pk="{{ impression.id }}" url="{% url 'cms:impression_del' book_id=book.id impression_id=impression.id %}">削除</button>

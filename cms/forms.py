@@ -1,6 +1,6 @@
 # coding:utf-8
 from django.forms import ModelForm
-from cms.models import Book
+from cms.models import Book, Impression
 
 
 class BookForm(ModelForm):
@@ -8,3 +8,8 @@ class BookForm(ModelForm):
     class Meta:
         model = Book
         fields = ('name', 'publisher', 'page', )
+
+class ImpressionForm(ModelForm):
+    class Meta:
+        model = Impression
+        fields = ('comment', )

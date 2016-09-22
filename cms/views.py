@@ -4,8 +4,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.views.generic.list import ListView
 
-from cms.models import Book
-from cms.forms import BookForm
+from cms.models import Book, Impression
+from cms.forms import BookForm, ImpressionForm
 
 
 def book_list(request):
@@ -45,9 +45,37 @@ class ImpressionList(ListView):
     paginate_by = 2
 
     def get(self, request, *args, **kwargs):
-        book = get_object_or_404(Book, pk=kargs['book_id'])
+        book = get_object_or_404(Book, pk=kwargs['book_id'])
         impressions = book.impressions.all().order_by('id')
         self.object_list = impressions
 
-        context = self.get_context_data(object_list=self.object_lsit, book=book)
+        context = self.get_context_data(object_list=self.object_list, book=book)
         return self.render_to_response(context)
+
+def impression_edit(request, book_id, impression_id=None):
+    """感想の編集"""
+    book = get_object_or_404(Book, pk=book_id)
+    if impression_id:
+        impression = get_object_or_404(Impression, pk=impression_id)
+    else:
+        impression = Impression()
+
+    if request.method == 'POST':
+        form = ImpressionForm(request.POST, instance=impression)
+        if form.is_valid():
+            impression = form.save(commit=False)
+            impression.book - book
+            impression.save()
+            return redirect('cms:impression_list', book_id=book_id)
+    else:
+        form = ImpressionForm(instance=impression)
+
+    return render(request,
+            'cms/impression_edit.html',
+            dict(form=form, book_id=book_id, impression_id=impression_id))
+
+def impression_del(request, book_id, impression_id):
+    """感想の削除"""
+    impression = get_object_or_404(Impression, pk=impression_id)
+    impression.delete()
+    return redirect('cms:impression_list', book_id=book_id)
